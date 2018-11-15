@@ -1,0 +1,4 @@
+com\mrb\springboot\demo\DemoApplication.class
+com\mrb\springboot\demo\DemoApplication$User.class
+com\mrb\springboot\demo\DemoApplication$DemoController.class
+com\mrb\springboot\demo\respository\UserRespotory.class
