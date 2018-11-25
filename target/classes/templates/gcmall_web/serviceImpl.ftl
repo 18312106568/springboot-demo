@@ -13,7 +13,7 @@ import utils.ParamUtil;
 public class ${bean.className}ServiceImpl extends ScResponseWarpper implements I${bean.className}Service {
     private static final Logger LOGGER = Logger.getLogger();
 
-    public ScResponse<PageResult<${bean.className}Dto>> find${bean.className}Page(<#list bean.searchList! as item>${item.type} ${item.name},</#list>, Integer page, Integer pageSize) {
+    public ScResponse<PageResult<${bean.className}Dto>> find${bean.className}Page(<#list bean.searchList! as item>${item.type} ${item.name},</#list> Integer page, Integer pageSize) {
         //1.校验分页参数并校正
         if (ParamUtil.isNullOrZero(page)) {
             page = 1;

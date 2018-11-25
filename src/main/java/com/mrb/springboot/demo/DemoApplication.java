@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import lombok.Data;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 /**
  *
  * @author MRB
@@ -41,6 +43,15 @@ public class DemoApplication {
         @RequestMapping("/redis-get")
         public String redisCache(){
             return stringRedisTemplate.opsForValue().get("1");
+        }
+    }
+    
+    @Controller
+    static class DefaultController{
+        @GetMapping("/default")
+        public String index(){
+            System.out.println("欢迎来到动态页面！");
+            return "default";
         }
     }
     
