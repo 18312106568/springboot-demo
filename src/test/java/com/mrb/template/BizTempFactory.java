@@ -7,16 +7,22 @@ package com.mrb.template;
 
 import com.google.gson.Gson;
 import com.mrb.springboot.demo.DemoApplication;
+import com.mrb.springboot.demo.constant.ScType;
 import org.springframework.beans.factory.annotation.Autowired;
 import freemarker.template.Configuration;
 import freemarker.template.MalformedTemplateNameException;
 import freemarker.template.Template;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.junit.Test;
@@ -53,19 +59,63 @@ public class BizTempFactory {
         bean.setAddList(fieldList);
         bean.setDeleteList(fieldList);
         
-        System.out.println(gson.toJson(bean));
+        //System.out.println(gson.toJson(bean));
+        for(ScType scType : ScType.values()){
+            try {
+                Map<String,Object> root = new HashMap();
+                Template temp = cfg.getTemplate(scType.getTempName());
+                root.put("bean",bean);
+                File targetFile = new File(String.format(scType.getTargetName(), className));
+                if(!targetFile.exists()){
+                    targetFile.createNewFile();
+                }
+                temp.process(root, new FileWriter(targetFile));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         
-//        try {
-//            Map<String,Object> root = new HashMap();
-//            Template temp = cfg.getTemplate("gcmall_web/service.ftl");
-//            root.put("bean",bean);
-//            temp.process(root, new FileWriter(new File(String.format("F:\\tmp\\%s.java", className))));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         
+    }
+    
+    
+    @Test
+    public void ZipFile(){
+        String className = "CategoryWhitelist";
+        try{
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(new File("/gcmall/sc.zip")));
+            for(ScType scType : ScType.values()){
+                 File inFile = new File(String.format(scType.getTargetName(), className));
+                doZip(inFile, out, inFile.getParent());
+            }
+            out.close();
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }finally{
+            
+        }
         
+    }
+    
+    private static void doZip(File inFile, ZipOutputStream out, String dir) throws IOException {
+        String entryName = null;
+        if (!"".equals(dir)) {
+            entryName = dir + "/" + inFile.getName();
+        } else {
+            entryName = inFile.getName();
+        }
+        ZipEntry entry = new ZipEntry(entryName);
+        out.putNextEntry(entry);
         
+        int len = 0 ;
+        byte[] buffer = new byte[1024];
+        FileInputStream fis = new FileInputStream(inFile);
+        while ((len = fis.read(buffer)) > 0) {
+            out.write(buffer, 0, len);
+            out.flush();
+        }
+        out.closeEntry();
+        fis.close();
     }
     
     @Data

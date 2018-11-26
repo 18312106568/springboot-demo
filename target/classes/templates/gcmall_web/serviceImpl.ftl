@@ -25,11 +25,10 @@ public class ${bean.className}ServiceImpl extends ScResponseWarpper implements I
         }
 
         //2.校验是否有空参数 直接返回参数不合法
-        <#if bean.notNullList??>
-        if (ParamUtil.isOneOfNullorEmpty(<#list 0..(bean.notNullList!?size-1) as i> <#if i = 0> ${bean.notNullList[i].name}<#else>, ${bean.notNullList[i].name}</#if></#list>)) {
+       
+        if (ParamUtil.isOneOfNullorEmpty(<#list 0..(bean.searchList!?size-1) as i> <#if bean.searchList[i].isMust><#if i = 0> ${bean.searchList[i].name} <#else>, ${bean.searchList[i].name}</#if></#if></#list>)) {
             return error(ResultCode.ILLEGAL_PARAM, ResultCode.ILLEGAL_PARAM.getDescription());
         }
-        </#if>
         try {
             PageResult pageResult = ${bean.className}Service.find${bean.className}Page(<#list bean.searchList! as item> ${item.name},</#list>, page, pageSize);
             return success(pageResult);
@@ -41,7 +40,7 @@ public class ${bean.className}ServiceImpl extends ScResponseWarpper implements I
 
 
     public ScResponse<Boolean> add${bean.className}(<#list 0..(bean.addList!?size-1) as i> <#if i = 0>${bean.addList[i].type} ${bean.addList[i].name} <#else>,${bean.addList[i].type} ${bean.addList[i].name}</#if></#list>) {
-        if (ParamUtil.isOneOfNullorEmpty(<#list 0..(bean.addList!?size-1) as i> <#if i = 0> ${bean.addList[i].name} <#else>, ${bean.addList[i].name}</#if></#list>)) {
+        if (ParamUtil.isOneOfNullorEmpty(<#list 0..(bean.addList!?size-1) as i> <#if bean.addList[i].isMust><#if i = 0> ${bean.addList[i].name} <#else>, ${bean.addList[i].name}</#if></#if></#list>)) {
             return error(ResultCode.ILLEGAL_PARAM, ResultCode.ILLEGAL_PARAM.getDescription());
         }
         try {
@@ -54,7 +53,7 @@ public class ${bean.className}ServiceImpl extends ScResponseWarpper implements I
     }
 
     public ScResponse<Boolean> delete${bean.className}(<#list 0..(bean.deleteList!?size-1) as i> <#if i = 0>${bean.deleteList[i].type} ${bean.deleteList[i].name} <#else>,${bean.deleteList[i].type} ${bean.deleteList[i].name}</#if></#list>) {
-        if (ParamUtil.isOneOfNullorEmpty(<#list 0..(bean.deleteList!?size-1) as i> <#if i = 0> ${bean.deleteList[i].name} <#else>, ${bean.deleteList[i].name}</#if></#list>)) {
+        if (ParamUtil.isOneOfNullorEmpty(<#list 0..(bean.deleteList!?size-1) as i> <#if bean.deleteList[i].isMust><#if i = 0> ${bean.deleteList[i].name} <#else>, ${bean.deleteList[i].name}</#if></#if></#list>)) {
             return error(ResultCode.ILLEGAL_PARAM, ResultCode.ILLEGAL_PARAM.getDescription());
         }
         try {
