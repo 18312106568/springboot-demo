@@ -1,0 +1,3 @@
+<package name="gcmall.category.whitelist.ddl">
+        <class name="CategoryWhitelist" comment="验号白名单" />
+</package>

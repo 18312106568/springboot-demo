@@ -25,6 +25,9 @@
                              bean.className=$(this).find('input').val();
                              break;
                          case 2:
+                             bean.classComment=$(this).find('input').val();
+                             break;
+                         case 3:
                              bean.addList = new Array();
                              $(this).find('.field').each(function(){
                                  var field = {};
@@ -34,7 +37,7 @@
                                  bean.addList.push(field);
                              });
                              break;
-                         case 3:
+                         case 4:
                              bean.deleteList = new Array();
                              $(this).find('.field').each(function(){
                                  var field = {};
@@ -44,20 +47,22 @@
                                  bean.deleteList.push(field);
                              });
                              break;
-                         case 4:
-                             bean.searchLis = new Array();
+                         case 5:
+                             bean.searchList = new Array();
                              $(this).find('.field').each(function(){
                                  var field = {};
                                  field.name = $(this).find('input').eq(0).val();
                                  field.type = $(this).find('input').eq(1).val();
                                  field.isMust = $(this).find('input').eq(2).prop('checked');
-                                 bean.searchLis.push(field);
+                                 bean.searchList.push(field);
                              });
                              break;
                          
                      }
                  });
-                 console.log(JSON.stringify(bean));
+                 var url = 'http://localhost:8090/downloadCode?entity=';
+                 var entity = encodeURIComponent(JSON.stringify(bean));
+                 window.location.href = url+entity;
              });
         })
         
@@ -70,6 +75,9 @@
         </div>
          <div class="item">
             类名：<input type="text"/>
+        </div>
+        <div class="item">
+            业务名：<input type="text"/>
         </div>
         <div class="item">
             新增：<input class="addField" type="button" value="添加属性"/>

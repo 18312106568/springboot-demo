@@ -8,12 +8,16 @@ package com.mrb.template;
 import com.google.gson.Gson;
 import com.mrb.springboot.demo.DemoApplication;
 import com.mrb.springboot.demo.constant.ScType;
+import com.mrb.springboot.demo.constant.WebConstants;
+import com.mrb.springboot.demo.utils.ZipUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import freemarker.template.Configuration;
 import freemarker.template.MalformedTemplateNameException;
 import freemarker.template.Template;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.ResourceUtils;
 
 /**
  *
@@ -45,7 +50,7 @@ public class BizTempFactory {
         Gson gson = new Gson();
         String packageName = "category.whitelist";
         String className = "CategoryWhitelist";
-        String classComment = "验号白名单";
+        String classComment = "cid白名单";
         Field field1 = new Field("Integer","bizType",false);
         Field field2 = new Field("Long","cid",true);
         List<Field> fieldList = new ArrayList();
@@ -65,7 +70,7 @@ public class BizTempFactory {
                 Map<String,Object> root = new HashMap();
                 Template temp = cfg.getTemplate(scType.getTempName());
                 root.put("bean",bean);
-                File targetFile = new File(String.format(scType.getTargetName(), className));
+                File targetFile =new File(String.format(scType.getTargetName(), className));
                 if(!targetFile.exists()){
                     targetFile.createNewFile();
                 }
@@ -77,6 +82,16 @@ public class BizTempFactory {
         
         
     }
+
+    @Test
+    public void testPath(){
+        try {
+            File file = ResourceUtils.getFile("classpath:gcmall/");
+            System.out.println(file.getPath());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
     
     
     @Test
@@ -86,7 +101,7 @@ public class BizTempFactory {
             ZipOutputStream out = new ZipOutputStream(new FileOutputStream(new File("/gcmall/sc.zip")));
             for(ScType scType : ScType.values()){
                  File inFile = new File(String.format(scType.getTargetName(), className));
-                doZip(inFile, out, inFile.getParent());
+                ZipUtils.doZip(inFile, out, inFile.getParentFile().getName());
             }
             out.close();
         }catch(Exception ex){
@@ -97,26 +112,7 @@ public class BizTempFactory {
         
     }
     
-    private static void doZip(File inFile, ZipOutputStream out, String dir) throws IOException {
-        String entryName = null;
-        if (!"".equals(dir)) {
-            entryName = dir + "/" + inFile.getName();
-        } else {
-            entryName = inFile.getName();
-        }
-        ZipEntry entry = new ZipEntry(entryName);
-        out.putNextEntry(entry);
-        
-        int len = 0 ;
-        byte[] buffer = new byte[1024];
-        FileInputStream fis = new FileInputStream(inFile);
-        while ((len = fis.read(buffer)) > 0) {
-            out.write(buffer, 0, len);
-            out.flush();
-        }
-        out.closeEntry();
-        fis.close();
-    }
+
     
     @Data
     public static class TempClass{

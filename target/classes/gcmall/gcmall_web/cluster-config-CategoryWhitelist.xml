@@ -1,0 +1,3 @@
+<config class="gcmall.category.whitelist.ddl.CategoryWhitelist" source="mysql" shard-type="none" comment="验号白名单">
+        <map client="vdb1"/>
+</config>
